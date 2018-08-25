@@ -1,6 +1,53 @@
 using System;
 using System.IO;
 
+class row{
+  private int n_slots;
+  private List slots;
+
+  public row(int n_s){
+    slots= new List();
+    n_slots=n_s;
+    for(int i=0;i<n_s;i++){
+      slots.add("");
+    }
+  }
+
+  public void addUnavailable(int pos){
+    slots.Insert(pos,"unavailable");
+  }
+
+  public bool IsUnavailable(int pos){
+    if (slots[pos]="unavailable"){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  public bool IsValid(int pos){
+    if (slots[pos]=""){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+  public bool enter(int pos,int size){
+    int ac=0;
+    for (int i=pos;i<slots.size() && ac!=size ;i++){
+      if(IsUnavailable(i)){break;}
+      ac++;
+    }
+
+
+  if(ac==size){return true;}
+  else{return false;}
+  }
+
+}
+
 
 class center{
   private int n_row;
@@ -41,7 +88,7 @@ class main{
                 Console.WriteLine(c.ToString());
                 // Read the stream to a string, and write the string to the console.
                 String line = sr.ReadToEnd();
-                Console.WriteLine(line);
+                Console.WriteLine(line+" esto es una linea");
             }
         }
         catch (Exception e){
