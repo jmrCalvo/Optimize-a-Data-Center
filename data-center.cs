@@ -1,15 +1,18 @@
 using System;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 class row{
   private int n_slots;
-  private List slots;
+  private static List <string> slots;
 
   public row(int n_s){
-    slots= new List();
+    slots= new List <String>();
     n_slots=n_s;
     for(int i=0;i<n_s;i++){
-      slots.add("");
+      slots.Add("");
     }
   }
 
@@ -18,7 +21,7 @@ class row{
   }
 
   public bool IsUnavailable(int pos){
-    if (slots[pos]="unavailable"){
+    if (slots[pos]=="unavailable"){
       return true;
     }
     else{
@@ -27,23 +30,30 @@ class row{
   }
 
   public bool IsValid(int pos){
-    if (slots[pos]=""){
+    if (slots[pos]==""){
       return true;
     }
     else{
       return false;
     }
   }
-  public bool enter(int pos,int size){
+  public bool CouldEnter(int pos,int size){
     int ac=0;
-    for (int i=pos;i<slots.size() && ac!=size ;i++){
+    for (int i=pos;i<slots.Count() || ac!=size ;i++){
       if(IsUnavailable(i)){break;}
       ac++;
     }
-
-
   if(ac==size){return true;}
   else{return false;}
+  }
+
+  public bool Enter(string serve_id, int pos, int size){
+    if(pos+size >= slots.Count()){return false;}
+    for (int i=pos;i<size;i++){
+      if(slots[i]!=""){return false;}
+      else{slots[i]=serve_id;}
+    }
+    return true;
   }
 
 }
@@ -55,6 +65,7 @@ class center{
   private int n_unvaliable;
   private int n_pool;
   private int n_server;
+  HashSet <row> rows;
 
   public center(int n_r,int n_s,int n_u,int n_p,int n_se){
     n_row=n_r;
@@ -62,6 +73,11 @@ class center{
     n_unvaliable=n_u;
     n_pool=n_p;
     n_server=n_se;
+    rows=new HashSet<row> ();
+    for(int i=0;i<n_row;i++){
+      row r=new row(n_slot);
+      rows.Add(r);
+    }
   }
   public center(String s){
     String[] substrings = s.Split(' ');
@@ -70,6 +86,11 @@ class center{
     n_unvaliable=Int32.Parse(substrings[2]);
     n_pool=Int32.Parse(substrings[3]);
     n_server=Int32.Parse(substrings[4]);
+    rows=new HashSet <row> ();
+    for(int i=0;i<n_row;i++){
+      row r=new row(n_slot);
+      rows.Add(r);
+    }
   }
 
   public override string ToString(){
