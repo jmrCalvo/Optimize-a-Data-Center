@@ -15,7 +15,7 @@ class server{
     chosen=false;
   }
 
-  public server (String s){
+  public server(String s){
     String[] substrings = s.Split(' ');
     n_slots=Int32.Parse(substrings[0]);
     capacity=Int32.Parse(substrings[1]);
@@ -44,6 +44,7 @@ class row{
 
   public row(int n_s){
     slots= new List <String>();
+
     n_slots=n_s;
     for(int i=0;i<n_s;i++){
       slots.Add("");
@@ -71,6 +72,7 @@ class row{
       return false;
     }
   }
+
   public bool CouldEnter(int pos,int size){
     int ac=0;
     for (int i=pos;i<slots.Count() || ac!=size ;i++){
@@ -90,6 +92,14 @@ class row{
     return true;
   }
 
+  public int nextPivot(int pos){
+    int i;
+    for (i=pos;i<slots.Count();i++){
+      if(!IsValid(i)){return i;}
+    }
+    return slots.Count();
+  }
+
 }
 
 
@@ -99,7 +109,8 @@ class center{
   private int n_unvaliable;
   private int n_pool;
   private int n_server;
-  List <row> rows;
+  private static List <row> rows;
+  private static List<server> servers;
 
   public center(int n_r,int n_s,int n_u,int n_p,int n_se){
     n_row=n_r;
@@ -108,6 +119,7 @@ class center{
     n_pool=n_p;
     n_server=n_se;
     rows=new List<row> ();
+    servers=new List <server>();
     for(int i=0;i<n_row;i++){
       row r=new row(n_slot);
       rows.Add(r);
@@ -121,6 +133,7 @@ class center{
     n_pool=Int32.Parse(substrings[3]);
     n_server=Int32.Parse(substrings[4]);
     rows=new List <row> ();
+    servers=new List <server>();
     for(int i=0;i<n_row;i++){
       row r=new row(n_slot);
       rows.Add(r);
@@ -135,11 +148,26 @@ class center{
     Console.WriteLine(s);
   }
 
+  public void AddServer(String st){
+    server s=new server(st);
+    servers.Add(s);
+    Console.WriteLine(" "+st);
+  }
+
   public int getN_Unvalid(){return n_unvaliable;}
+  public int getN_Server(){return n_server;}
+
 
   public override string ToString(){
     return (n_row.ToString()+" "+n_slot.ToString()+" "+n_unvaliable.ToString()+" "+n_pool.ToString()+" "+n_server.ToString());
   }
+
+public void CoreFunction(){
+  for(int i=0;i<n_row;i++){
+    row r=rows[i];
+    //here
+  }
+}
 
 }
 
@@ -156,6 +184,9 @@ class main{
                 // Console.WriteLine(line+" esto es una linea");
                 for (int i=0;i<c.getN_Unvalid();i++){
                   c.AddInvalid(sr.ReadLine());
+                }
+                for(int i=0;i<c.getN_Server();i++){
+                  c.AddServer(sr.ReadLine());
                 }
             }
         }
