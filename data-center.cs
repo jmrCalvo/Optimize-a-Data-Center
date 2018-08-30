@@ -5,25 +5,40 @@ using System.Collections.Generic;
 using System.Linq;
 
 class server{
+  private String name;
   private int n_slots;
   private int capacity;
   private bool chosen;
 
-  public server(int n_s,int c){
+  public server(int n_s,int c, String nm){
     n_slots=n_s;
     capacity=c;
     chosen=false;
+    name=nm;
   }
 
-  public server(String s){
+  public server(String s, int valor){
     String[] substrings = s.Split(' ');
     n_slots=Int32.Parse(substrings[0]);
     capacity=Int32.Parse(substrings[1]);
     chosen=false;
+    String nm=valor.ToString();
+    name="server"+nm;
   }
 
   public int getN_Slots(){
     return n_slots;
+  }
+
+  public int getStatus(){
+    return chosen;
+  }
+  public int getCapacity(){
+    return capacity;
+  }
+
+  public int getID(){
+    return name;
   }
 
   public bool Preferable(server s){
@@ -85,7 +100,7 @@ class row{
 
   public bool Enter(string serve_id, int pos, int size){
     if(pos+size >= slots.Count()){return false;}
-    for (int i=pos;i<size;i++){
+    for (int i=pos;i<=size;i++){
       if(slots[i]!=""){return false;}
       else{slots[i]=serve_id;}
     }
@@ -161,11 +176,39 @@ class center{
   public override string ToString(){
     return (n_row.ToString()+" "+n_slot.ToString()+" "+n_unvaliable.ToString()+" "+n_pool.ToString()+" "+n_server.ToString());
   }
+  public server chooseServer(int size){
+    int capac=0;
+    server s;
+    for(int i=0;i<n_server;i++){
+      if(servers[i].getStatus() == false && size ==servers[i].getN_Slots()){
+        if(servers[i].getCapacity()>capac){
+          s=servers[i];
+          capac=servers[i].getCapacity();
+        }
+      }
+
+    }
+
+    if(capac==0){return null;}
+    else{return s;}
+
+  }
+
+
 
 public void CoreFunction(){
   for(int i=0;i<n_row;i++){
     row r=rows[i];
-    //here
+    int i=0;
+    while(i<=n_row){
+      int final=r.nextPivot(i);
+      server s=chooseServer(final-i);
+      String ID=s.getID();
+      if((r.Enter(ID,i,final)==true){
+        s.choose();
+      }
+      i=i+final+1;
+    }
   }
 }
 
@@ -186,7 +229,7 @@ class main{
                   c.AddInvalid(sr.ReadLine());
                 }
                 for(int i=0;i<c.getN_Server();i++){
-                  c.AddServer(sr.ReadLine());
+                  c.AddServer(sr.ReadLine(),i);
                 }
             }
         }
